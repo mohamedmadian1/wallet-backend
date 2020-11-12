@@ -17,16 +17,18 @@ export class UserController {
     this.validateInput(req);
 
     bcrypt.hash(password, 10).then((hashedPass) => {
+      console.log("role", req.body.role)
       const newUser = new User({
         name: name,
         mobile: mobile,
         password: hashedPass,
         balance: 1000,
-        role: "client",
+        role: req.body.role ||"client",
       });
       newUser
         .save()
         .then((result) => {
+          console.log("new user" , result)
           res.status(201).json({
             message: "user created!!",
             result,
@@ -99,9 +101,44 @@ export class UserController {
     })
   };
 
+  //get single user
+  public getUser = (req: Request, res: Response, next: NextFunction)=>{
+    const userId = req.params.userId;
+    User.findById(userId)
+    .then(user=>{
+      res.status(200).json({message:"user fetched successfully!", user:user})
+    }).catch(err=>{
+      console.log(err)
+      // res.status(500)
+    })
+  }
+
+  //update user
+  public updateUser = (req: Request, res: Response, next: NextFunction)=>{
+    const updatedUser = new User({
+      _id:req.body._id,
+      name:req.body.name,
+      mobile:req.body.mobile,
+      role:req.body.role
+    })
+    User.updateOne({_id:req.params.userId},updatedUser)
+    .then(updateduser=>{
+      console.log(updatedUser);
+      res.status(201).json({message:'user updated successfully!'})
+    }).catch(err=>{
+      console.log(err)
+    })
+  }
+
   //Delete user
   
-
+public deleteUser = (req: Request, res: Response, next: NextFunction)=>{
+  const userId = req.params.userId;
+  User.deleteOne({_id:userId}).then(result=>{
+    console.log(result)
+    res.status(200).json({message:'user deleted!!'})
+  })
+}
   //set user Role
   public updateRole = (req: any, res: Response, next: NextFunction) => {
     User.updateOne(

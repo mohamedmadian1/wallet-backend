@@ -26,8 +26,15 @@ export class userRoutes {
     );
     //get all users
     this.router.get("/users", this.userController.getAllUsers)
-
+    //get single user
+    this.router.get("/users/:userId", this.userController.getUser)
+    
+      //update user
+    this.router.patch("/users/:userId", this.userController.updateUser)
+    //delete user
+    this.router.delete('/users/:userId', this.userController.deleteUser)
     //set role
     this.router.patch("/role",checkAuth,this.userController.updateRole)
+
   }
 }
