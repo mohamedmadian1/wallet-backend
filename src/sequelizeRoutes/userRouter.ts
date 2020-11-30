@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { UserController } from "../controllers/userController";
+import { UserController } from "../sequelize-controller/userControllers";
 import { body } from "express-validator";
 import { checkAuth } from "../middleware/jwt-config";
 

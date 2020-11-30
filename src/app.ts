@@ -7,15 +7,20 @@ import express, {
 } from "express";
 import mongoose from "mongoose";
 import cors from "cors";
-import { userRoutes } from "./routes/userRouter";
+//mongoose
+// import { userRoutes } from "./routes/userRouter";
+//sequelize
+ import { userRoutes } from "./sequelizeRoutes/userRouter";
 import { transferRoutes } from "./routes/transferRoutes";
+import {sequelize} from "./sequelize"
 
 class Server {
   public app: Application;
   constructor() {
     this.app = express();
     this.config();
-    this.mongo();
+    // this.mongo();
+    this.sequelizeasConnection()
     this.routes();
   }
 
@@ -41,6 +46,16 @@ class Server {
       .then(() => console.log("DB Connected ..."))
       .catch((error) => console.log(error));
   }
+
+    private sequelizeasConnection(){
+      (async()=>{
+        await sequelize.sync({force:true}).then(()=>{
+          console.log('DB s connected')
+        }).catch(err=>{
+          console.log(err)
+        })
+      })()
+    }
 
   public routes() {
     this.app.use("/api/user", new userRoutes().router);
